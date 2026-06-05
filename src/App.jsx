@@ -1,11 +1,13 @@
 import React from "react";
 import './App.css';
+import Card from "./Card";
 
 
 class App extends React.Component {
 
   constructor(props) {
     super(props);
+    console.log("1. Constructor called")
     this.state = {
       students: [
         {
@@ -36,6 +38,18 @@ class App extends React.Component {
         marks: ""
       }
     }
+  }
+
+  componentDidMount(){
+    console.log("2. ComponentDidMount is called")
+  }
+
+  componentDidUpdate(){
+    console.log("3. ComponentDidUpdate is called")
+  }
+
+  componentWillUnmount(){
+    console.log("4. ComponentWillUnmount is called")
   }
 
   showAllStudents() {
@@ -144,10 +158,11 @@ class App extends React.Component {
             <h2>Student's List ({this.state.students.length})</h2>
             <div className="student-section">
               {this.showAllStudents()}
+              <Card />
             </div>
           </section>
 
-          <section>
+          <section className="add-student">
             <h2>Add Student Form</h2>
             <form className="add-student-form" onSubmit={this.handleSubmit}>
 

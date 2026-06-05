@@ -31,7 +31,7 @@
 
 .student-section {
   display: grid;
-  grid-template-columns: repeat(3, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 32px;
 }
 
@@ -81,11 +81,17 @@
   font-weight: bold;
 }
 
+.add-student h2 {
+  text-align: center;
+  margin-top: 32px;
+}
+
 .add-student-form {
   border: 1px solid lightgrey;
   border-radius: 16px;
   padding: 32px 24px;
-  max-width: 800px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .form-group {
@@ -93,6 +99,7 @@
 }
 
 .form-group select, .form-group input{
+  box-sizing: border-box;
   padding: 12px 14px;
   border-radius: 6px;
   border: 0.5px solid lightgray;
@@ -116,4 +123,8 @@
 
 .submit-btn:hover {
   background: green;
+}
+
+.invisible {
+  display: none;
 }
