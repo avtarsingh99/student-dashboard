@@ -143,7 +143,7 @@ class App extends React.Component {
 
 
   render() {
-    // console.log(this.state.students)
+
     return (
       <div className="app">
 
@@ -158,7 +158,7 @@ class App extends React.Component {
             <h2>Student's List ({this.state.students.length})</h2>
             <div className="student-section">
               {this.showAllStudents()}
-              <Card />
+              {/* <Card />    adding or removing this component will invoke componentWillUnmount */}
             </div>
           </section>
 
