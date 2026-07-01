@@ -7,7 +7,7 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log("1. Constructor called")
+    // console.log("1. Constructor called")
     this.state = {
       students: [
         {
@@ -36,33 +36,57 @@ class App extends React.Component {
         name: "",
         subject: "",
         marks: ""
-      }
+      },
+      SelectedFilter: 'All'
     }
   }
 
-  componentDidMount(){
-    console.log("2. ComponentDidMount is called")
+  // componentDidMount() {
+  //   console.log("2. ComponentDidMount is called")
+  // }
+
+  // componentDidUpdate() {
+  //   console.log("3. ComponentDidUpdate is called")
+  // }
+
+  // componentWillUnmount() {
+  //   console.log("4. ComponentWillUnmount is called")
+  // }
+
+  handleEdit = (id) => {
+    console.log(this.state.students.find(student => student.id === id))
   }
 
-  componentDidUpdate(){
-    console.log("3. ComponentDidUpdate is called")
+  handleFilter = (option) => {
+    console.log(option)
   }
 
-  componentWillUnmount(){
-    console.log("4. ComponentWillUnmount is called")
+  filterOptions = ["All", "Passed Only", "Failed Only"];
+
+  setFilter = () => {
+    if (this.state.selectedFilter === 'Passed Only') {
+      return this.state.students.filter(student => student.passed);
+    } else if (this.state.selectedFilter === 'Failed Only') {
+      return this.state.students.filter(student => !student.passed);
+    }
+    return this.state.students;
   }
 
-  showAllStudents() {
+  showAllStudents = () => {
 
-    if (this.state.students.length == 0) {
+    const tempStudents = this.setFilter();
+    console.log(this.state.selectedFilter)
+    console.log(tempStudents)
+
+    if (tempStudents.length == 0) {
       return (
         <div className="empty-state">
-          <span>No students data found! Add student to see a student's list.</span>
+          <span>No students data found! Add students or try by changing filters</span>
         </div>
       )
     }
 
-    return this.state.students.map(student => (
+    return tempStudents.map(student => (
       <div className={`student-card ${student.passed ? "passed" : "failed"}`} key={student.id}>
 
         <div className="card-header">
@@ -76,7 +100,8 @@ class App extends React.Component {
         </div>
 
         <div className="card-bottom">
-          <button onClick={()=> this.handleDelete(student.id)}>Delete</button>
+          <button className="delete-btn" onClick={() => this.handleDelete(student.id)}>Delete</button>
+          <button className="edit-btn" onClick={() => this.handleEdit(student.id)}>Edit</button>
         </div>
       </div>
     ))
@@ -85,10 +110,10 @@ class App extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault();
 
-    const {name, subject, marks} = this.state.newStudent;
+    const { name, subject, marks } = this.state.newStudent;
 
     // if any of the input in blank
-    if(!name.trim() || !subject.trim() || !marks){
+    if (!name.trim() || !subject.trim() || !marks) {
       console.log(name)
       console.log(subject)
       console.log(marks)
@@ -98,7 +123,7 @@ class App extends React.Component {
 
     const convertedMarks = parseInt(marks, 10);
 
-    if(isNaN(convertedMarks) || convertedMarks > 100 || convertedMarks < 0){
+    if (isNaN(convertedMarks) || convertedMarks > 100 || convertedMarks < 0) {
       alert("Please enter marks between 0 to 100 only");
       return;
     }
@@ -122,7 +147,7 @@ class App extends React.Component {
   }
 
   handleDelete = (id) => {
-    if(window.confirm("Are you sure you want to delete this student ?")){
+    if (window.confirm("Are you sure you want to delete this student ?")) {
       this.setState({
         students: this.state.students.filter(student => student.id !== id)
       })
@@ -130,7 +155,7 @@ class App extends React.Component {
   }
 
   handleInputChange = (event) => {
-    const {name, value} = event.target;
+    const { name, value } = event.target;
 
     this.setState({
       newStudent: {
@@ -139,7 +164,6 @@ class App extends React.Component {
       }
     })
   }
-
 
 
   render() {
@@ -156,6 +180,33 @@ class App extends React.Component {
 
           <section>
             <h2>Student's List ({this.state.students.length})</h2>
+            <div className="filter-section">
+
+              <div className="left-group">
+
+                {this.filterOptions.map((option, index) => (
+                  <button key={index} className="filter-btn" onClick={() => this.setState({
+                    selectedFilter: option
+                  })}>
+                    {option}
+                  </button>
+                ))}
+
+                <select>
+                  <option>--Sort By Grades--</option>
+                  <option>High to Low</option>
+                  <option>Low to High</option>
+                </select>
+
+              </div>
+
+              <div className="right-group">
+
+                <button className="clear-btn">Clear All Filters</button>
+
+              </div>
+
+            </div>
             <div className="student-section">
               {this.showAllStudents()}
               {/* <Card />    adding or removing this component will invoke componentWillUnmount */}
@@ -181,10 +232,10 @@ class App extends React.Component {
               <div className="form-group">
                 <label htmlFor="student-subject">Subject: </label>
                 <select
-                 id="student-subject"
-                 name="subject"
-                 value={this.state.newStudent.subject}
-                 onChange={this.handleInputChange}>
+                  id="student-subject"
+                  name="subject"
+                  value={this.state.newStudent.subject}
+                  onChange={this.handleInputChange}>
                   <option value="">Select a value</option>
                   <option value="physics">Physics</option>
                   <option value="chemistry">Chemistry</option>
