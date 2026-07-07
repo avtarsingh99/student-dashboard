@@ -7,7 +7,7 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    // console.log("1. Constructor called")
+    console.log("1. Constructor called")
     this.state = {
       students: [
         {
@@ -37,48 +37,110 @@ class App extends React.Component {
         subject: "",
         marks: ""
       },
-      SelectedFilter: 'All'
+      SelectedFilter: 'All',
+      SortBy: '',
+      isEditing: false,
+      editingStudentID: null,
+      editMarks: ''
     }
   }
 
-  // componentDidMount() {
-  //   console.log("2. ComponentDidMount is called")
-  // }
-
-  // componentDidUpdate() {
-  //   console.log("3. ComponentDidUpdate is called")
-  // }
-
-  // componentWillUnmount() {
-  //   console.log("4. ComponentWillUnmount is called")
-  // }
-
-  handleEdit = (id) => {
-    console.log(this.state.students.find(student => student.id === id))
+  componentDidMount() {
+    console.log("2. ComponentDidMount is called")
   }
 
-  handleFilter = (option) => {
-    console.log(option)
+  componentDidUpdate() {
+    console.log("3. ComponentDidUpdate is called")
+  }
+
+  componentWillUnmount() {
+    console.log("4. ComponentWillUnmount is called")
+  }
+
+  handleEdit = (id) => {
+    const student = this.state.students.find(s => s.id === id);
+    this.setState({
+      isEditing: true,
+      editingStudentID: id,
+      editMarks: student.marks
+    });
+  }
+
+   handleEditSave = () => {
+
+    const marks = Number(this.state.editMarks)
+
+    if(isNaN(marks) || marks < 0 || marks > 100){
+      alert('Please enter marks between 0 and 100 only')
+      return;
+    }
+
+    this.setState(prev => ({
+      students: prev.students.map(student =>
+        student.id === prev.editingStudentID
+          ? {
+             ...student, 
+             marks: marks,
+             passed: marks >= 40
+            }
+          : student
+      ),
+      isEditing: false,
+      editingStudentID: null,
+      editMarks: ''
+    }));
+  }
+
+  handleCancelEdit = () => {
+    this.setState({
+      isEditing: false,
+      editingStudentID: null,
+      editMarks: ''
+    })
   }
 
   filterOptions = ["All", "Passed Only", "Failed Only"];
 
+
+
   setFilter = () => {
-    if (this.state.selectedFilter === 'Passed Only') {
+
+    if (this.state.SelectedFilter === 'Passed Only') {
       return this.state.students.filter(student => student.passed);
-    } else if (this.state.selectedFilter === 'Failed Only') {
+    } else if (this.state.SelectedFilter === 'Failed Only') {
       return this.state.students.filter(student => !student.passed);
     }
-    return this.state.students;
+    return [...this.state.students];
+  }
+
+  sortStudents = () => {
+    const tempStudents = this.setFilter();
+
+    tempStudents.sort((a, b) => {
+      switch (this.state.SortBy) {
+        case 'highToLow':
+          return b.marks - a.marks;
+        case 'lowToHigh':
+          return a.marks - b.marks;
+        default:
+          return 0;
+      }
+    })
+    return tempStudents;
+  }
+
+  clearFilter = () => {
+    this.setState({
+      SortBy: '',
+      SelectedFilter: 'All'
+    })
   }
 
   showAllStudents = () => {
 
-    const tempStudents = this.setFilter();
-    console.log(this.state.selectedFilter)
-    console.log(tempStudents)
+    const tempStudents = this.sortStudents();
 
-    if (tempStudents.length == 0) {
+    if (tempStudents.length === 0) {
       return (
         <div className="empty-state">
           <span>No students data found! Add students or try by changing filters</span>
@@ -179,31 +241,65 @@ class App extends React.Component {
         <main className="app-main">
 
           <section>
+            {this.state.isEditing && (
+              <div className="pop-up">
+                <div className='edit-card'>
+
+                  <div className="edit-card-header">
+                    <h3>Edit Marks</h3>
+                    <button className="close-btn" onClick={this.handleCancelEdit}>x</button>
+                  </div>
+
+                  <div className="edit-card-data">
+                    <label htmlFor="edited-marks">Marks: </label>
+                    <input
+                      type="number"
+                      placeholder="Enter new marks (0 to 100 only)"
+                      id="edited-marks"
+                      value={this.state.editMarks}
+                      onChange={(e) => this.setState({ editMarks: e.target.value })}
+                      min={0}
+                      max={100}
+                    />
+                  </div>
+
+                  <div className="edit-card-bottom">
+                    <button className="edit-btn" onClick={this.handleEditSave}>Save</button>
+                    <button className="delete-btn" onClick={this.handleCancelEdit}>Cancel</button>
+                  </div>
+                </div>
+              </div>
+            )}
             <h2>Student's List ({this.state.students.length})</h2>
             <div className="filter-section">
 
               <div className="left-group">
 
                 {this.filterOptions.map((option, index) => (
-                  <button key={index} className="filter-btn" onClick={() => this.setState({
-                    selectedFilter: option
+                  <button key={option} className={`filter-btn ${option === this.state.SelectedFilter ? 'active' : ''}`} onClick={() => this.setState({
+                    SelectedFilter: option
                   })}>
                     {option}
                   </button>
                 ))}
 
-                <select>
+                <select
+                  value={this.state.SortBy}
+                  onChange={(e) => this.setState({
+                    SortBy: e.target.value
+                  })}
+                >
                   <option>--Sort By Grades--</option>
-                  <option>High to Low</option>
-                  <option>Low to High</option>
+                  <option value='highToLow'>High to Low</option>
+                  <option value='lowToHigh'>Low to High</option>
                 </select>
 
               </div>
 
               <div className="right-group">
-
-                <button className="clear-btn">Clear All Filters</button>
-
+                {(this.state.SortBy !== '' || this.state.SelectedFilter !== 'All') &&
+                  <button className='clear-btn' onClick={this.clearFilter}>Clear All Filters</button>
+                }
               </div>
 
             </div>
