@@ -235,6 +235,7 @@
 
 .left-group {
   display: flex;
+  flex-wrap: wrap;
   gap: 20px;
 }
 
@@ -295,5 +296,11 @@
 
   .app-header p {
     font-size: 1rem;
+  }
+
+  .filter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
 }
