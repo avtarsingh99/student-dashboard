@@ -29,10 +29,30 @@
   margin-top: 32px;
 }
 
+.heading-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-btn {
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  font-weight: bold;
+  background-color: navy;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.add-btn:hover {
+  background-color: green;
+}
+
 .student-section {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 300px);
-  justify-content: center;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: flex-start;
   gap: 32px;
 }
 
@@ -42,7 +62,7 @@
   color: darkgray;
 }
 
-.pop-up{
+.pop-up {
   position: fixed;
   top: 0;
   left: 0;
@@ -65,7 +85,7 @@
   gap: 20px;
 }
 
-.edit-card-header{
+.edit-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -80,12 +100,12 @@
   cursor: pointer;
 }
 
-.close-btn:hover{
+.close-btn:hover {
   background: crimson;
   color: white;
 }
 
-.edit-card-data label{
+.edit-card-data label {
   display: block;
   margin-bottom: 4px;
 }
@@ -177,16 +197,32 @@
   background: rgb(200, 40, 40);
 }
 
-.add-student h2 {
-  text-align: center;
-  margin-top: 32px;
+.exit-form {
+  padding: 6px 10px;
+  border-radius: 50%;
+  border: none;
+  background-color: lightgray;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.exit-form:hover {
+  background-color: crimson;
+  color: white;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .add-student-form {
   border: 1px solid lightgrey;
   border-radius: 16px;
   padding: 32px 24px;
-  max-width: 600px;
+  width: 100%;
+  box-sizing: border-box;
   margin: 0 auto;
 }
 
@@ -299,8 +335,55 @@
   }
 
   .filter-section {
-    display: flex;
+   align-items: flex-start;
+  }
+
+  .filter-btn {
+    width: fit-content;
+    font-size: 12px;
+  }
+
+  .clear-btn {
+    font-size: 12px;
+  }
+
+  .student-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .edit-card{
+    width: 70%;
+  }
+}
+
+@media (max-width: 480px) {
+  .student-section {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .filter-section {
     flex-direction: column;
-    gap: 24px;
+    gap: 16px;
+  }
+
+  .filter-btn {
+    font-size: 10px;
+  }
+
+  .left-group {
+    gap: 14px;
+  }
+
+  .right-group {
+    width: 100%;
+  }
+
+  .clear-btn {
+    font-size: 10px;
+    width: 100%;
+  }
+
+  .edit-card{
+    width: 80%;
   }
 }

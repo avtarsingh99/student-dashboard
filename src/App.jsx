@@ -41,7 +41,8 @@ class App extends React.Component {
       SortBy: '',
       isEditing: false,
       editingStudentID: null,
-      editMarks: ''
+      editMarks: '',
+      showAddForm: false
     }
   }
 
@@ -66,11 +67,11 @@ class App extends React.Component {
     });
   }
 
-   handleEditSave = () => {
+  handleEditSave = () => {
 
     const marks = Number(this.state.editMarks)
 
-    if(isNaN(marks) || marks < 0 || marks > 100){
+    if (isNaN(marks) || marks < 0 || marks > 100) {
       alert('Please enter marks between 0 and 100 only')
       return;
     }
@@ -79,10 +80,10 @@ class App extends React.Component {
       students: prev.students.map(student =>
         student.id === prev.editingStudentID
           ? {
-             ...student, 
-             marks: marks,
-             passed: marks >= 40
-            }
+            ...student,
+            marks: marks,
+            passed: marks >= 40
+          }
           : student
       ),
       isEditing: false,
@@ -204,7 +205,8 @@ class App extends React.Component {
         name: "",
         subject: "",
         marks: ""
-      }
+      },
+      showAddForm: false
     })
   }
 
@@ -270,7 +272,12 @@ class App extends React.Component {
                 </div>
               </div>
             )}
-            <h2>Student's List ({this.state.students.length})</h2>
+            <div className="heading-group">
+              <h2>Student's List ({this.state.students.length})</h2>
+              {!this.state.showAddForm && (
+                <button className="add-btn" onClick={() => this.setState({ showAddForm: true })}>+ Add Student</button>
+              )}
+            </div>
             <div className="filter-section">
 
               <div className="left-group">
@@ -298,7 +305,7 @@ class App extends React.Component {
 
               <div className="right-group">
                 {(this.state.SortBy !== '' || this.state.SelectedFilter !== 'All') &&
-                  <button className='clear-btn' onClick={this.clearFilter}>Clear All Filters</button>
+                  <button className='clear-btn' onClick={this.clearFilter}>Clear Filters</button>
                 }
               </div>
 
@@ -309,55 +316,62 @@ class App extends React.Component {
             </div>
           </section>
 
-          <section className="add-student">
-            <h2>Add Student Form</h2>
-            <form className="add-student-form" onSubmit={this.handleSubmit}>
+          {this.state.showAddForm &&
+            <div className="pop-up">
+              <div className="edit-card">
+                <div className="form-header">
+                  <h2>Add Student Form</h2>
+                  <button className="exit-form" onClick={() => this.setState({ showAddForm: false })}>X</button>
+                </div>
+                <form className="add-student-form" onSubmit={this.handleSubmit}>
 
-              <div className="form-group">
-                <label htmlFor="student-name">Full Name: </label>
-                <input
-                  type="text"
-                  placeholder="Enter student name here..."
-                  id="student-name"
-                  name="name"
-                  value={this.state.newStudent.name}
-                  onChange={this.handleInputChange}
-                />
+                  <div className="form-group">
+                    <label htmlFor="student-name">Full Name: </label>
+                    <input
+                      type="text"
+                      placeholder="Enter student name here..."
+                      id="student-name"
+                      name="name"
+                      value={this.state.newStudent.name}
+                      onChange={this.handleInputChange}
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="student-subject">Subject: </label>
+                    <select
+                      id="student-subject"
+                      name="subject"
+                      value={this.state.newStudent.subject}
+                      onChange={this.handleInputChange}>
+                      <option value="">Select a value</option>
+                      <option value="physics">Physics</option>
+                      <option value="chemistry">Chemistry</option>
+                      <option value="maths">Maths</option>
+                      <option value="english">English</option>
+                      <option value="Economics">Economics</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="student-marks">Marks: </label>
+                    <input
+                      type="number"
+                      placeholder="Enter number between 0 to 100"
+                      id="student-marks"
+                      name="marks"
+                      value={this.state.newStudent.marks}
+                      onChange={this.handleInputChange}
+                      min={0}
+                      max={100}
+                    />
+                  </div>
+
+                  <button type="submit" className="submit-btn">Add Student</button>
+                </form>
               </div>
-
-              <div className="form-group">
-                <label htmlFor="student-subject">Subject: </label>
-                <select
-                  id="student-subject"
-                  name="subject"
-                  value={this.state.newStudent.subject}
-                  onChange={this.handleInputChange}>
-                  <option value="">Select a value</option>
-                  <option value="physics">Physics</option>
-                  <option value="chemistry">Chemistry</option>
-                  <option value="maths">Maths</option>
-                  <option value="english">English</option>
-                  <option value="Economics">Economics</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="student-marks">Marks: </label>
-                <input
-                  type="number"
-                  placeholder="Enter number between 0 to 100"
-                  id="student-marks"
-                  name="marks"
-                  value={this.state.newStudent.marks}
-                  onChange={this.handleInputChange}
-                  min={0}
-                  max={100}
-                />
-              </div>
-
-              <button type="submit" className="submit-btn">Add Student</button>
-            </form>
-          </section>
+            </div>
+          }
 
         </main>
       </div>
